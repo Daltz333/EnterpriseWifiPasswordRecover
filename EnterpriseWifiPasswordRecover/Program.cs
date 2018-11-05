@@ -20,6 +20,7 @@ namespace EnterpriseWifiPasswordRecover
             // Ensure we have a profiles directory
             try
             {
+                Console.WriteLine("[DEBUG] Creating profiles directory");
                 System.IO.Directory.CreateDirectory(workingDirectory);
             }
             catch
@@ -28,8 +29,17 @@ namespace EnterpriseWifiPasswordRecover
             }
 
             // Decrypting enterprise wifi passwords is done in 3 stages
+            Console.WriteLine("===================");
+            Console.WriteLine("Starting Stage One!");
+            Console.WriteLine("===================");
             Stage1();   // Extract reg keys             Typically runas: SYSTEM (it will pickup the keys of every user)
+            Console.WriteLine("===================");
+            Console.WriteLine("Starting Stage Two!");
+            Console.WriteLine("===================");
             Stage2();   // Try to decrypt first layer   Typically runas: SYSTEM
+            Console.WriteLine("===================");
+            Console.WriteLine("Starting Stage Three!");
+            Console.WriteLine("===================");
             Stage3();   // Show creds, where possible   Typically runas: the user that owns the connection
         }
 
@@ -65,6 +75,7 @@ namespace EnterpriseWifiPasswordRecover
             }
             catch
             {
+                Console.WriteLine("[ERROR] Cannot access user registry store!");
                 // Error access users registry store
             }
             
@@ -112,11 +123,15 @@ namespace EnterpriseWifiPasswordRecover
                             // Write it to disk, this is stage1 extracted!
                             System.IO.File.WriteAllBytes(workingDirectory + "/" + stage1Prefix + subKey + extension, theData);
                             Console.WriteLine("Extracted stage1 for " + subKey);
+                        } else
+                        {
+                            Console.WriteLine("[DEBUG] No MSMUserData Found");
                         }
                     }
                 }
                 catch
                 {
+                    Console.WriteLine("[ERROR] No Permissions?");
                     // no permissions?
                 }
 
